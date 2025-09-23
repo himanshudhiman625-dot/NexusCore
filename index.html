@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Core</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Main Container -->
+    <div id="app" class="container mx-auto p-4">
+
+        <!-- Home Page -->
+        <div id="home-page">
+            <header class="flex justify-between items-center mb-6 bg-slate-800 text-white p-4 rounded-md">
+                <h1 class="text-3xl font-bold">Nexus Core</h1>
+                <div class="flex items-center space-x-4">
+                    <input type="text" id="search-bar" placeholder="Search videos..." class="px-4 py-2 border rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="login-as-admin-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">Login as Admin</button>
+                </div>
+            </header>
+
+            <main id="video-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Video cards will be injected here by JavaScript -->
+            </main>
+            <p id="loading-error" class="text-red-500 text-center mt-8 hidden">Error loading videos. Please try again later.</p>
+
+            <footer class="text-center mt-12 py-4 border-t text-gray-600">
+                <p>&copy; 2025 Nexus Core. All rights reserved.</p>
+            </footer>
+        </div>
+
+        <!-- Admin Login Page -->
+        <div id="login-page" class="hidden">
+             <div class="flex flex-col items-center justify-center min-h-screen bg-blue-400">
+                <h1 class="text-5xl font-bold text-white mb-8">Welcome to Nexus Core</h1>
+                <div class="w-full max-w-sm p-8 bg-blue-200 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Admin login</h2>
+                    <form id="login-form">
+                        <div class="mb-4">
+                            <input type="text" id="username" placeholder="Username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-6">
+                            <input type="password" id="password" placeholder="Password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <button type="submit" class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-4 rounded-lg transition duration-300 text-lg">Login</button>
+                    </form>
+                    <p class="text-center mt-4">
+                        <a href="#" id="signup-link" class="text-gray-700 hover:underline">Sign up</a>
+                    </p>
+                </div>
+                 <footer class="text-center mt-12 py-4 text-white">
+                    <p>&copy; 2025 Himsphire. All rights reserved.</p>
+                </footer>
+            </div>
+        </div>
+
+
+        <!-- Admin Interface Page -->
+        <div id="admin-page" class="hidden">
+             <header class="flex justify-between items-center mb-6 bg-slate-800 text-white p-4 rounded-md">
+                <h1 class="text-3xl font-bold">Nexus Core</h1>
+                 <button id="back-to-home-btn" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Back to home screen</button>
+            </header>
+
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-center mb-8 border-b pb-4">Admin Interface</h2>
+
+                <!-- Add New Video Form -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6">Add New video</h3>
+                    <form id="add-video-form" class="space-y-6">
+                        <div>
+                            <label for="video-title" class="block text-lg font-medium text-gray-700 mb-2">Video title</label>
+                            <input type="text" id="video-title" placeholder="title" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="video-thumbnail" class="block text-lg font-medium text-gray-700 mb-2">Thumbnail</label>
+                            <input type="text" id="video-thumbnail" placeholder="thumbnel link/ input image" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="video-link" class="block text-lg font-medium text-gray-700 mb-2">Link</label>
+                            <input type="text" id="video-link" placeholder="Video link" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex justify-end space-x-4">
+                            <button type="button" id="cancel-add-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-md transition duration-300">Cancel</button>
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md transition duration-300">Save Video</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Edit/Remove Videos Section -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-6 text-center border-t pt-8">Edit or Remove Videos</h3>
+                    <div id="admin-video-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <!-- Admin video cards will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // State
+            let videos = [
+                { id: 1, title: 'Introduction to Rocket Science', thumbnail: 'https://placehold.co/600x400/000000/FFFFFF?text=Rocket+Science', link: '#' },
+                { id: 2, title: 'Deep Dive into Machine Learning', thumbnail: 'https://placehold.co/600x400/1B1B1B/FFFFFF?text=Machine+Learning', link: '#' },
+                { id: 3, title: 'The Art of Digital Painting', thumbnail: 'https://placehold.co/600x400/363636/FFFFFF?text=Digital+Painting', link: '#' },
+                { id: 4, title: 'Cooking Masterclass: Italian Cuisine', thumbnail: 'https://placehold.co/600x400/5B5B5B/FFFFFF?text=Italian+Cuisine', link: '#' },
+                { id: 5, title: 'Acoustic Guitar for Beginners', thumbnail: 'https://placehold.co/600x400/7C7C7C/FFFFFF?text=Guitar+Lessons', link: '#' },
+                { id: 6, title: 'Advanced JavaScript Concepts', thumbnail: 'https://placehold.co/600x400/9C9C9C/FFFFFF?text=JavaScript', link: '#' },
+                { id: 7, title: 'Yoga and Mindfulness', thumbnail: 'https://placehold.co/600x400/AFAFAF/000000?text=Yoga', link: '#' },
+                { id: 8, title: 'History of Ancient Civilizations', thumbnail: 'https://placehold.co/600x400/D0D0D0/000000?text=History', link: '#' },
+            ];
+
+            // Page Elements
+            const homePage = document.getElementById('home-page');
+            const loginPage = document.getElementById('login-page');
+            const adminPage = document.getElementById('admin-page');
+
+            // Button Elements
+            const loginAsAdminBtn = document.getElementById('login-as-admin-btn');
+            const backToHomeBtn = document.getElementById('back-to-home-btn');
+
+            // Form Elements
+            const loginForm = document.getElementById('login-form');
+            const addVideoForm = document.getElementById('add-video-form');
+            const cancelAddBtn = document.getElementById('cancel-add-btn');
+
+            // Container Elements
+            const videoGallery = document.getElementById('video-gallery');
+            const adminVideoList = document.getElementById('admin-video-list');
+            const loadingError = document.getElementById('loading-error');
+
+            // Input Elements
+            const searchBar = document.getElementById('search-bar');
+
+            // --- Page Navigation ---
+            function showPage(page) {
+                homePage.classList.add('hidden');
+                loginPage.classList.add('hidden');
+                adminPage.classList.add('hidden');
+                page.classList.remove('hidden');
+            }
+
+            loginAsAdminBtn.addEventListener('click', () => showPage(loginPage));
+            backToHomeBtn.addEventListener('click', () => showPage(homePage));
+            // Simulate signup link navigation
+            document.getElementById('signup-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Sign up functionality is not implemented in this demo.');
+            });
+
+
+            // --- Video Rendering ---
+            function renderVideoCard(video) {
+                return `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                        <a href="${video.link}" target="_blank">
+                            <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg truncate">${video.title}</h3>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }
+
+            function renderAdminVideoCard(video) {
+                return `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden p-4 relative" data-id="${video.id}">
+                        <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-40 object-cover rounded-md mb-4">
+                        <input type="text" value="${video.title}" class="w-full p-2 border rounded-md mb-2 video-title-input" placeholder="Video Title">
+                        <div class="absolute top-2 right-2 flex space-x-2">
+                             <button class="edit-btn bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 w-10 h-10 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                            </button>
+                            <button class="remove-btn bg-red-500 text-white p-2 rounded-full hover:bg-red-600 w-10 h-10 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function displayVideos(filteredVideos = videos) {
+                if (filteredVideos.length === 0 && videos.length > 0) {
+                     videoGallery.innerHTML = `<p class="text-center col-span-full text-gray-500">No videos found for your search.</p>`;
+                } else if (videos.length === 0) {
+                    videoGallery.innerHTML = ''; // Clear gallery if no videos exist
+                    loadingError.classList.remove('hidden');
+                }
+                else {
+                    videoGallery.innerHTML = filteredVideos.map(renderVideoCard).join('');
+                    loadingError.classList.add('hidden');
+                }
+                adminVideoList.innerHTML = videos.map(renderAdminVideoCard).join('');
+            }
+
+            // --- Authentication ---
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Simple validation for demo purposes
+                if (username === 'xxx' && password === 'xxx') {
+                    showPage(adminPage);
+                    loginForm.reset();
+                } else {
+                    alert('Invalid credentials. Please try again.');
+                }
+            });
+
+            // --- Admin Functionality ---
+            addVideoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('video-title').value;
+                const thumbnail = document.getElementById('video-thumbnail').value;
+                const link = document.getElementById('video-link').value;
+
+                if (title && thumbnail && link) {
+                    const newVideo = {
+                        id: Date.now(), // Unique ID
+                        title,
+                        thumbnail,
+                        link
+                    };
+                    videos.unshift(newVideo); // Add to the beginning
+                    displayVideos();
+                    addVideoForm.reset();
+                } else {
+                    alert('Please fill in all fields.');
+                }
+            });
+            
+            cancelAddBtn.addEventListener('click', () => {
+                addVideoForm.reset();
+            });
+
+            adminVideoList.addEventListener('click', (e) => {
+                const card = e.target.closest('.relative[data-id]');
+                if (!card) return;
+
+                const videoId = Number(card.dataset.id);
+
+                if (e.target.closest('.remove-btn')) {
+                    if (confirm('Are you sure you want to remove this video?')) {
+                        videos = videos.filter(v => v.id !== videoId);
+                        displayVideos();
+                    }
+                }
+
+                if (e.target.closest('.edit-btn')) {
+                    const newTitle = card.querySelector('.video-title-input').value;
+                    const videoToUpdate = videos.find(v => v.id === videoId);
+                    if (videoToUpdate) {
+                        videoToUpdate.title = newTitle;
+                        displayVideos();
+                         alert('Video title updated!');
+                    }
+                }
+            });
+
+            // --- Search Functionality ---
+            searchBar.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredVideos = videos.filter(video =>
+                    video.title.toLowerCase().includes(searchTerm)
+                );
+                displayVideos(filteredVideos);
+            });
+
+            // Initial Render
+            displayVideos();
+        });
+    </script>
+</body>
+</html>
